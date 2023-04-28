@@ -7,6 +7,7 @@ const isLogged = require("./middlewares/is_logged.js")
 const checkToken = require("./middlewares/check_token.js")
 const createJsonWebToken = require("./utils/createJsonWebToken.js")
 const Business = require('./models/business.js')
+const Dependent = require("./models/dependent")
 
 app.use(express.json()) 
 app.use(checkToken)
@@ -51,6 +52,54 @@ app.post('/login/owner', async(req, res, next) => {
         next(err)
     }
 })
+
+
+
+
+
+
+
+
+
+app.post('/signup/dependent', (req, res, next) => {
+
+    const {name, email, password} = req.body
+    // console.log(req.body)
+    Dependent.create(name,email,password)
+        .then(dbRes => res.json(dbRes))
+
+})
+
+app.post('/login/dependent', async(req, res, next) => {
+
+    const { email, password } = req.body
+    try {
+        let dependent = await Dependent.findByOne(email)
+        
+        
+        console.log(password, dependent)
+        let match = await bcrypt.compare(password, dependent.password_digest)
+        
+        if (!match) throw new Error("invalid email or password")
+    
+        let token = createJsonWebToken(dependent)
+    
+        res.json(token)
+
+    } catch (err) {
+        console.log(err)
+        next(err)
+    }
+})
+
+
+
+
+
+
+
+
+
 
 app.use(errorHandler)
 
