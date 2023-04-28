@@ -3,7 +3,8 @@ CREATE DATABASE dashboard;
 CREATE TABLE business (
     id SERIAL PRIMARY KEY, 
     name VARCHAR(255) NOT NULL,
-    owner VARCHAR(255) NOT NULL
+    owner_email VARCHAR(255) NOT NULL,
+    password_digest TEXT NOT NULL
 );
 
 CREATE TABLE dependents (
@@ -12,7 +13,8 @@ CREATE TABLE dependents (
     email VARCHAR(255) NOT NULL,
     position TEXT,
     id_business INT REFERENCES business (id),
-    hours_available INT
+    hours_available INT,
+    password_digest TEXT NOT NULL
 );
 
 CREATE TABLE tasks (
@@ -24,6 +26,5 @@ CREATE TABLE tasks (
     id_employee INT REFERENCES dependents (id)
 );
 
-INSERT INTO business (name, owner) VALUES ('Brooklyn', 'Valentina Gottardello');
-INSERT INTO business (name, owner) VALUES ('Mobilia', 'Augusto Gottardello');
-INSERT INTO business (name, owner) VALUES ('Gran Rex', 'Mariana Fagotti');
+INSERT INTO business (name, owner, password_digest) VALUES ('Brooklyn', 'Valentina Gottardello', 'pudding');
+
