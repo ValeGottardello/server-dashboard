@@ -30,6 +30,7 @@ class Business {
                     return res.rows[0]
                 })
     }
+
 }   
 
 module.exports = Business
