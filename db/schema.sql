@@ -26,5 +26,5 @@ CREATE TABLE tasks (
     id_employee INT REFERENCES dependents (id)
 );
 
-INSERT INTO business (name, owner, password_digest) VALUES ('Brooklyn', 'Valentina Gottardello', 'pudding');
+-- INSERT INTO business (name, owner, password_digest) VALUES ('Brooklyn', 'Valentina Gottardello', 'pudding');
 
