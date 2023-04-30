@@ -87,6 +87,22 @@ class Dependent {
                     return res.rows[0]
                 }) 
     }
+
+    static updatePosition (position, email, id_business) {
+        const sql = `
+        UPDATE dependents 
+        SET position = $1 
+        WHERE email = $2 AND id_business = $3 returning *;`
+        
+        return db.query(sql, [position, email, id_business])
+                .then(res => {
+                    if (res.rows.length === 0){
+                        throw new Error (404, 'record not found')
+                    }
+                    delete res.rows[0].password_digest
+                    return res.rows[0]
+                }) 
+    }
 }   
 
 module.exports = Dependent 

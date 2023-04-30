@@ -71,19 +71,25 @@ app.put('/owner/add/dependent', (req, res, next) => {
 
     let { id, position, email } = req.body
     id = Number(id)
-    console.log(id,position,email)
+    // console.log(id,position,email)
     Dependent.addDependentToBusiness(id, position, email)
         .then(dbRes => res.json(dbRes))
 })
 
 app.put('/owner/delete/dependent', (req, res, next) => {
     let { email, position } = req.body
-console.log(email,position)
+// console.log(email,position)
     Dependent.deleteDependentToBusiness(email, position)
         .then(dbRes => res.json(dbRes))
 })
 
+app.put('/owner/update/dependent', (req, res, next) => {
+    let { position, email, id_business } = req.body
 
+// console.log(req.body)
+    Dependent.updatePosition(position, email, id_business)
+        .then(dbRes => res.json(dbRes))
+})
 app.post('/dependent/signup', (req, res, next) => {
 
     const {name, email, password} = req.body
@@ -99,7 +105,7 @@ app.post('/dependent/login', async(req, res, next) => {
     try {
         let dependent = await Dependent.findByOne(email)
         
-        console.log(password, dependent)
+        // console.log(password, dependent)
         let match = await bcrypt.compare(password, dependent.password_digest)
         
         if (!match) throw new Error("invalid email or password")
@@ -124,17 +130,35 @@ app.put('/dependent/addhours', (req, res, next) => {
 })
 
 
-app.get('/tasks', (req, res, next) => {
+app.get('/tasks/list', (req, res, next) => {
+
     let { id } = req.query
+
     id = Number(id)
     console.log(id)
+
     Task.findAllForOne(id).then(dbRes => res.json(dbRes))
 })
 
-// app.put('/tasks', (req, res, next) => {
-//     let id = req.params
-//     Task.findAllForOne(id).then(dbRes => res.json(dbRes))
-// })
+app.post('/tasks/new', (req, res, next) => {
+
+    let { task_name, to_do, id_manager, id_employee} = req.body
+
+    id_manager = Number(id_manager)
+    id_employee = Number(id_employee)
+
+    console.log(req.body)
+    
+    Task.create(task_name, to_do, id_manager, id_employee).then(dbRes => res.json(dbRes))
+})
+
+app.put('/tasks/done', (req, res, next) => {
+
+    let { id } = req.query
+    id = Number(id)
+    console.log(id)
+    Task.checkDone(id).then(dbRes => res.json(dbRes))
+})
 
 
 app.use(errorHandler)
