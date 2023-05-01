@@ -40,6 +40,7 @@ app.post('/owner/signup', (req, res, next) => {
 app.post('/owner/login', async(req, res, next) => {
 
     const { email, password } = req.body
+    console.log(req.body)
     try {
         let owner = await Business.findByOne(email)
         
@@ -122,7 +123,7 @@ app.post('/dependent/login', async(req, res, next) => {
 
 
 app.put('/dependent/addhours', (req, res, next) => {
-
+    console.log(req.body)
     let { hours_available, email } = req.body
     hours_available = Number(hours_available)
     Dependent.addHours(hours_available, email)
@@ -135,21 +136,33 @@ app.get('/tasks/list', (req, res, next) => {
     let { id } = req.query
 
     id = Number(id)
-    console.log(id)
+    // console.log(id)
 
     Task.findAllForOne(id).then(dbRes => res.json(dbRes))
 })
+app.get('/tasks/all', (req, res, next) => {
 
+    let { id } = req.query
+
+    id = Number(id)
+    console.log("hola")
+
+    Task.findAll(id).then(dbRes =>{
+        
+        console.log(dbRes)
+        return res.json(dbRes)})
+})
 app.post('/tasks/new', (req, res, next) => {
 
-    let { task_name, to_do, id_manager, id_employee} = req.body
+    let { task_name, to_do, id_manager, id_employee, id_business, name_employee} = req.body
 
     id_manager = Number(id_manager)
     id_employee = Number(id_employee)
+    id_business = Number(id_business)
 
     console.log(req.body)
     
-    Task.create(task_name, to_do, id_manager, id_employee).then(dbRes => res.json(dbRes))
+    Task.create(task_name, to_do, id_manager, id_employee,id_business, name_employee).then(dbRes => res.json(dbRes))
 })
 
 app.put('/tasks/done', (req, res, next) => {
@@ -159,7 +172,13 @@ app.put('/tasks/done', (req, res, next) => {
     console.log(id)
     Task.checkDone(id).then(dbRes => res.json(dbRes))
 })
+app.delete('/tasks/delete', (req, res, next) => {
 
+    let { id } = req.query
+    id = Number(id)
+    console.log(id)
+    Task.delete(id).then(dbRes => res.json(dbRes))
+})
 
 app.use(errorHandler)
 
