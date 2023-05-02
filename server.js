@@ -20,10 +20,13 @@ app.use(checkToken)
 //     next();
 // });
 app.use(cors({
+    origin: 'https://fixup.vercel.app',
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
+app.use(cors({
     origin: 'http://localhost:3000',
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
-
 app.get('/', (req, res, next) => {
    res.json("hello")
 })
