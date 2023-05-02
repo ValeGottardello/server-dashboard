@@ -13,10 +13,11 @@ class Business {
             .genSalt(10)
             .then(salt => bcrypt.hash(password, salt))
             .then(hash => {
-                console.log(hash)
                 return db.query(sql, [name, email, hash])})
             .then(res => {
-                // console.log(res)
+                if (res.rows.length === 0){
+                    return {error: "record not found"}
+                }
                 return res.rows[0]})
     }
 
@@ -25,9 +26,21 @@ class Business {
         return db.query(sql, [email])
                 .then(res => {
                     if (res.rows.length === 0){
-                        throw new Error (404, 'record not found')
+                        return {error: "record not found"}
                     }
                     return res.rows[0]
+                })
+    }
+    static findName (id) {
+        const sql = 'select * from business where id = $1;'
+        return db.query(sql, [id])
+                .then(res => {
+                    if (res.rows.length === 0){
+                        return {error: "record not found"}
+                    }
+                    delete res.rows[0].password_digest
+                    return res.rows[0]
+                        
                 })
     }
 

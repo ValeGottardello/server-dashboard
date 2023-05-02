@@ -9,6 +9,9 @@ class Task {
         console.log(task_name, to_do, id_manager, id_employee)
         return db.query(sql, [task_name, to_do, id_employee, id_manager, id_business, name_employee])
                 .then(res => {
+                    if (res.rows.length === 0){
+                        return {error: "record not found"}
+                    }
                     return res.rows
                 })
     }
@@ -32,6 +35,9 @@ class Task {
 
         return db.query(sql, [id])
                 .then(res => {
+                    if (res.rows.length === 0){
+                        return {error: "record not found"}
+                    }
                     return res.rows
                 }) 
     }
@@ -41,8 +47,10 @@ class Task {
 
         return db.query(sql, [id])
                 .then(res => {
-            
-            return res.rows[0]
+                    if (res.rows.length === 0){
+                        return {error: "record not found"}
+                    }
+                    return res.rows[0]
         }) 
     }
     static delete (id) {
@@ -51,9 +59,12 @@ class Task {
 
         return db.query(sql, [id])
                 .then(res => {
-            return res.rows[0]
-        }) 
-    }
+                    if (res.rows.length === 0){
+                        return {error: "record not found"}
+                    }
+                    return res.rows[0]
+                }) 
+        }
 }
 
 module.exports = Task

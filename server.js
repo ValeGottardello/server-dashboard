@@ -32,9 +32,10 @@ app.post('/owner/signup', (req, res, next) => {
 
     const {name, email, password} = req.body
     // console.log(req.body)
+    if (name, email, password){
     Business.create(name,email,password)
         .then(dbRes => res.json(dbRes))
-
+    }
 })
 
 app.post('/owner/login', async(req, res, next) => {
@@ -59,13 +60,24 @@ app.post('/owner/login', async(req, res, next) => {
         next(err)
     }
 })
+app.get('/owner', (req, res, next) => {
+
+    let { id } = req.query
+    id = Number(id)
+    if (id) {
+    Business.findName(id)
+        .then(dbRes => res.json(dbRes))
+    }
+})
 
 app.get('/owner/alldependents', (req, res, next) => {
 
     let { id } = req.query
     id = Number(id)
-    Dependent.findAll(id)
-        .then(dbRes => res.json(dbRes))
+    if (id) {
+        Dependent.findAll(id)
+            .then(dbRes => res.json(dbRes))
+    }
 })
 
 app.put('/owner/add/dependent', (req, res, next) => {
@@ -73,30 +85,46 @@ app.put('/owner/add/dependent', (req, res, next) => {
     let { id, position, email } = req.body
     id = Number(id)
     // console.log(id,position,email)
+    if (id) {
     Dependent.addDependentToBusiness(id, position, email)
         .then(dbRes => res.json(dbRes))
+    }
 })
 
-app.put('/owner/delete/dependent', (req, res, next) => {
+app.put('/owner/delete/dependent', async (req, res, next) => {
     let { email, position } = req.body
-// console.log(email,position)
-    Dependent.deleteDependentToBusiness(email, position)
-        .then(dbRes => res.json(dbRes))
+
+    try {
+        let dependent = await Dependent.deleteDependentToBusiness(email, position)
+        
+        let token = createJsonWebToken(dependent)
+    
+        res.json(token)
+
+    } catch (err) {
+        console.log(err)
+        next(err)
+    } 
+    
 })
 
 app.put('/owner/update/dependent', (req, res, next) => {
     let { position, email, id_business } = req.body
 
 // console.log(req.body)
+    if (email, position, id_business) {
     Dependent.updatePosition(position, email, id_business)
         .then(dbRes => res.json(dbRes))
+    }
 })
 app.post('/dependent/signup', (req, res, next) => {
 
     const {name, email, password} = req.body
     // console.log(req.body)
-    Dependent.create(name,email,password)
-        .then(dbRes => res.json(dbRes))
+    if (name, email, password){
+        Dependent.create(name,email,password)
+            .then(dbRes => res.json(dbRes))
+    }
 
 })
 
@@ -122,13 +150,24 @@ app.post('/dependent/login', async(req, res, next) => {
 })
 
 
-app.put('/dependent/addhours', (req, res, next) => {
-    console.log(req.body)
+app.put('/dependent/addhours', async (req, res, next) => {
+
     let { hours_available, email } = req.body
     hours_available = Number(hours_available)
-    Dependent.addHours(hours_available, email)
-        .then(dbRes => res.json(dbRes))
+
+    try {
+        let dependent = await Dependent.addHours(hours_available, email)
+        
+        let token = createJsonWebToken(dependent)
+    
+        res.json(token)
+
+    } catch (err) {
+        console.log(err)
+        next(err)
+    }    
 })
+
 
 
 app.get('/tasks/list', (req, res, next) => {
@@ -137,8 +176,9 @@ app.get('/tasks/list', (req, res, next) => {
 
     id = Number(id)
     // console.log(id)
-
-    Task.findAllForOne(id).then(dbRes => res.json(dbRes))
+    if (id) {
+        Task.findAllForOne(id).then(dbRes => res.json(dbRes))
+    }
 })
 app.get('/tasks/all', (req, res, next) => {
 
@@ -146,11 +186,12 @@ app.get('/tasks/all', (req, res, next) => {
 
     id = Number(id)
     console.log("hola")
-
-    Task.findAll(id).then(dbRes =>{
-        
-        console.log(dbRes)
-        return res.json(dbRes)})
+    if (id) {
+        Task.findAll(id).then(dbRes =>{
+            
+            console.log(dbRes)
+            return res.json(dbRes)})
+    }
 })
 app.post('/tasks/new', (req, res, next) => {
 
@@ -170,14 +211,18 @@ app.put('/tasks/done', (req, res, next) => {
     let { id } = req.query
     id = Number(id)
     console.log(id)
-    Task.checkDone(id).then(dbRes => res.json(dbRes))
+    if (id) {
+        Task.checkDone(id).then(dbRes => res.json(dbRes))
+    }
 })
 app.delete('/tasks/delete', (req, res, next) => {
 
     let { id } = req.query
     id = Number(id)
     console.log(id)
-    Task.delete(id).then(dbRes => res.json(dbRes))
+    if (id) {
+        Task.delete(id).then(dbRes => res.json(dbRes))
+    }
 })
 
 app.use(errorHandler)
