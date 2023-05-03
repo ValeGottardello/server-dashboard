@@ -20,7 +20,7 @@ app.use(checkToken)
 //     methods: ['GET', 'POST', 'PUT', 'DELETE']
 // }));
 app.use(cors({
-    origin: 'https://fixup-git-main-valegottardello.vercel.app',
+    origin: process.env.FIX_UP,
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 
