@@ -28,5 +28,4 @@ CREATE TABLE tasks (
     name_employee TEXT
 );
 
--- INSERT INTO business (name, owner, password_digest) VALUES ('Brooklyn', 'Valentina Gottardello', 'pudding');
 
