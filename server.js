@@ -15,8 +15,7 @@ const cors = require('cors');
 app.use(express.json()) 
 app.use(checkToken)
 app.use(cors({
-    // origin: process.env.CLIENT,
-    origin: "http://localhost:3000",
+    origin: process.env.CLIENT,
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 
