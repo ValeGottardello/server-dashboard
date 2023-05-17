@@ -6,18 +6,12 @@ class Task {
             insert into tasks (task_name, to_do, id_manager, id_employee, id_business, name_employee)
             values ($1, $2, $3, $4, $5, $6) returning *;
         `
-        console.log(task_name, to_do, id_manager, id_employee)
         return db.query(sql, [task_name, to_do, id_employee, id_manager, id_business, name_employee])
-                .then(res => {
-                    if (res.rows.length === 0){
-                        return {error: "record not found"}
-                    }
-                    return res.rows
-                })
+                .then(res => res.rows)
     }
     static findAllForOne (id) {
 
-        console.log(id)
+
         const sql = `select * from tasks where id_employee = $1 and done = 'no';`
 
         return db.query(sql, [id])
@@ -30,7 +24,7 @@ class Task {
     }
     static findAll (id) {
 
-        console.log(id)
+
         const sql = `select * from tasks where id_business = $1;`
 
         return db.query(sql, [id])

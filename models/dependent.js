@@ -8,16 +8,16 @@ class Dependent {
             insert into dependents (name, email, password_digest)
             values ($1, $2, $3) returning *;
         `
-        console.log(name,email,password)
+
         return bcrypt
             .genSalt(10)
             .then(salt => bcrypt.hash(password, salt))
             .then(hash => db.query(sql, [name, email, hash]))
             .then(res => {
                 if (res.rows.length === 0){
-                    return {error: "record not found"}
+                    return { error: "record not found" }
                 }
-                // console.log(res)
+
                 return res.rows[0]})
     }
 
@@ -27,7 +27,7 @@ class Dependent {
         return db.query(sql, [email])
                 .then(res => {
                     if (res.rows.length === 0){
-                        return {error: "record not found"}
+                        return { error: "record not found" }
                     }
                     return res.rows[0]
                 })
@@ -38,7 +38,7 @@ class Dependent {
         return db.query(sql, [id])
                 .then(res => {
                     if (res.rows.length === 0){
-                        return {error: "record not found"}
+                        return { error: "record not found" }
                     }
                     return res.rows.map(dependent => {
                         delete dependent.password_digest
@@ -52,8 +52,8 @@ class Dependent {
         
         return db.query(sql, [id_business, position, email])
                 .then(res => {
-                    if (res.rows.length === 0){
-                        return {error: "record not found"}
+                    if (res.rows.length === 0) {
+                        throw new Error("The user entered does not have a valid account")
                     }
                     delete res.rows[0].password_digest
                     return res.rows[0]
@@ -66,9 +66,6 @@ class Dependent {
         
         return db.query(sql, [hours_available, email])
                 .then(res => {
-                    if (res.rows.length === 0){
-                        return {error: "record not found"}
-                    }
                     delete res.rows[0].password_digest
                     return res.rows[0]
                 }) 
@@ -78,16 +75,12 @@ class Dependent {
     static deleteDependentToBusiness (email, position) {
 
         const sql = `
-        UPDATE dependents 
-        SET id_business = NULL, 
-        position = 'unemployee' 
-        WHERE email = $1 AND position = $2 
-        returning *;`
+        UPDATE dependents SET id_business = NULL, position = 'unemployee' WHERE email = $1 AND position = $2 returning *;`
         
         return db.query(sql, [email, position])
                 .then(res => {
                     if (res.rows.length === 0){
-                        return {error: "record not found"}
+                        return { error: "record not found" }
                     }
                     delete res.rows[0].password_digest
                     return res.rows[0]
@@ -103,7 +96,7 @@ class Dependent {
         return db.query(sql, [position, email, id_business])
                 .then(res => {
                     if (res.rows.length === 0){
-                        return {error: "record not found"}
+                        return { error: "record not found" }
                     }
                     delete res.rows[0].password_digest
                     return res.rows[0]

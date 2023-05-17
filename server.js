@@ -14,55 +14,60 @@ const cors = require('cors');
 
 app.use(express.json()) 
 app.use(checkToken)
-
 app.use(cors({
-    origin: process.env.CLIENT,
+    // origin: process.env.CLIENT,
+    origin: "http://localhost:3000",
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 
+
 app.get('/', (req, res, next) => {
-   res.json("hello")
+   res
+    .json("hello")
 })
 
 app.post('/owner/signup', (req, res, next) => {
 
     const {name, email, password} = req.body
-    // console.log(req.body)
+
     if (name, email, password){
-    Business.create(name,email,password)
-        .then(dbRes => res.json(dbRes))
+        Business.create(name,email,password)
+            .then(dbRes => res.json(dbRes))
+            .catch(next)
     }
 })
 
-app.post('/owner/login', async(req, res, next) => {
+app.post('/owner/login', async (req, res, next) => {
 
     const { email, password } = req.body
-    console.log(req.body)
+
     try {
         let owner = await Business.findByOne(email)
-        
-        
-        console.log(password, owner)
+
+        if (owner.error) throw new Error ("Insert a valid email")
+      
         let match = await bcrypt.compare(password, owner.password_digest)
         
-        if (!match) throw new Error("invalid email or password")
+        if (!match) throw new Error ("Insert a valid password")
     
         let token = createJsonWebToken(owner)
     
         res.json(token)
-
+    
     } catch (err) {
-        console.log(err)
         next(err)
     }
 })
+
 app.get('/owner', (req, res, next) => {
 
     let { id } = req.query
     id = Number(id)
     if (id) {
-    Business.findName(id)
-        .then(dbRes => res.json(dbRes))
+        Business
+            .findName(id)
+            .then(dbRes => res.json(dbRes))
+            .catch(next)
     }
 })
 
@@ -71,8 +76,10 @@ app.get('/owner/alldependents', (req, res, next) => {
     let { id } = req.query
     id = Number(id)
     if (id) {
-        Dependent.findAll(id)
+        Dependent
+            .findAll(id)
             .then(dbRes => res.json(dbRes))
+            .catch(next)
     }
 })
 
@@ -80,10 +87,11 @@ app.put('/owner/add/dependent', (req, res, next) => {
 
     let { id, position, email } = req.body
     id = Number(id)
-    // console.log(id,position,email)
     if (id) {
-    Dependent.addDependentToBusiness(id, position, email)
-        .then(dbRes => res.json(dbRes))
+        Dependent
+            .addDependentToBusiness(id, position, email)
+            .then(dbRes => res.json(dbRes))
+            .catch(next)
     }
 })
 
@@ -98,7 +106,7 @@ app.put('/owner/delete/dependent', async (req, res, next) => {
         res.json(token)
 
     } catch (err) {
-        console.log(err)
+
         next(err)
     } 
     
@@ -107,19 +115,24 @@ app.put('/owner/delete/dependent', async (req, res, next) => {
 app.put('/owner/update/dependent', (req, res, next) => {
     let { position, email, id_business } = req.body
 
-// console.log(req.body)
+
     if (email, position, id_business) {
-    Dependent.updatePosition(position, email, id_business)
-        .then(dbRes => res.json(dbRes))
+        Dependent
+            .updatePosition(position, email, id_business)
+            .then(dbRes => res.json(dbRes))
+            .catch(next)
     }
 })
+
 app.post('/dependent/signup', (req, res, next) => {
 
     const {name, email, password} = req.body
-    // console.log(req.body)
+
     if (name, email, password){
-        Dependent.create(name,email,password)
+        Dependent
+            .create(name,email,password)
             .then(dbRes => res.json(dbRes))
+            .catch(next)
     }
 
 })
@@ -130,10 +143,11 @@ app.post('/dependent/login', async(req, res, next) => {
     try {
         let dependent = await Dependent.findByOne(email)
         
-        // console.log(password, dependent)
+        if (dependent.error) throw new Error ("Insert a valid email")
+        
         let match = await bcrypt.compare(password, dependent.password_digest)
         
-        if (!match) throw new Error("invalid email or password")
+        if (!match) throw new Error("Insert a valid password")
     
         let token = createJsonWebToken(dependent)
     
@@ -144,7 +158,6 @@ app.post('/dependent/login', async(req, res, next) => {
         next(err)
     }
 })
-
 
 app.put('/dependent/addhours', async (req, res, next) => {
 
@@ -164,31 +177,34 @@ app.put('/dependent/addhours', async (req, res, next) => {
     }    
 })
 
-
-
 app.get('/tasks/list', (req, res, next) => {
 
     let { id } = req.query
 
     id = Number(id)
-    // console.log(id)
+
     if (id) {
-        Task.findAllForOne(id).then(dbRes => res.json(dbRes))
+        Task
+            .findAllForOne(id)
+            .then(dbRes => res.json(dbRes))
+            .catch(next)
     }
 })
+
 app.get('/tasks/all', (req, res, next) => {
 
     let { id } = req.query
 
     id = Number(id)
-    console.log("hola")
+
     if (id) {
-        Task.findAll(id).then(dbRes =>{
-            
-            console.log(dbRes)
-            return res.json(dbRes)})
+        Task
+            .findAll(id)
+            .then(dbRes => res.json(dbRes))
+            .catch(next)
     }
 })
+
 app.post('/tasks/new', (req, res, next) => {
 
     let { task_name, to_do, id_manager, id_employee, id_business, name_employee} = req.body
@@ -197,27 +213,37 @@ app.post('/tasks/new', (req, res, next) => {
     id_employee = Number(id_employee)
     id_business = Number(id_business)
 
-    console.log(req.body)
-    
-    Task.create(task_name, to_do, id_manager, id_employee,id_business, name_employee).then(dbRes => res.json(dbRes))
+    if (id_manager, id_employee, id_business) {
+        Task
+            .create(task_name, to_do, id_manager, id_employee,id_business, name_employee)
+            .then(dbRes => res.json(dbRes))
+            .catch(next)
+    }
 })
 
 app.put('/tasks/done', (req, res, next) => {
 
     let { id } = req.query
     id = Number(id)
-    console.log(id)
+
     if (id) {
-        Task.checkDone(id).then(dbRes => res.json(dbRes))
+        Task
+            .checkDone(id)
+            .then(dbRes => res.json(dbRes))
+            .catch(next)
     }
 })
+
 app.delete('/tasks/delete', (req, res, next) => {
 
     let { id } = req.query
     id = Number(id)
-    console.log(id)
+    
     if (id) {
-        Task.delete(id).then(dbRes => res.json(dbRes))
+        Task
+            .delete(id)
+            .then(dbRes => res.json(dbRes))
+            .catch(next)
     }
 })
 
