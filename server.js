@@ -16,7 +16,7 @@ app.use(express.json())
 app.use(checkToken)
 
 app.use(cors({
-    origin: process.env.CLIENT || process.env.CLIENT_SECOND,
+    origin: process.env.CLIENT,
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 
