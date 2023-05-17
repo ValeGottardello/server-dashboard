@@ -10,17 +10,13 @@ const Business = require('./models/business.js')
 const Dependent = require("./models/dependent")
 const Task = require('./models/task')
 const cors = require('cors');
-const port = process.env.PORT || 8080
+
 
 app.use(express.json()) 
 app.use(checkToken)
 
-// app.use(cors({
-//     origin: 'http://localhost:3000',
-//     methods: ['GET', 'POST', 'PUT', 'DELETE']
-// }));
 app.use(cors({
-    origin: process.env.FIX_UP,
+    origin: process.env.CLIENT || process.env.CLIENT_SECOND,
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 
@@ -227,6 +223,6 @@ app.delete('/tasks/delete', (req, res, next) => {
 
 app.use(errorHandler)
 
-app.listen(port, () => {
-    console.log(`listening on port ${port}`)
+app.listen(config.port, () => {
+    console.log(`listening on port ${config.port}`)
 })
