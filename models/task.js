@@ -30,7 +30,7 @@ class Task {
         return db.query(sql, [id])
                 .then(res => {
                     if (res.rows.length === 0){
-                        return {error: "record not found"}
+                        return { error: "record not found" }
                     }
                     return res.rows
                 }) 
