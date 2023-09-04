@@ -114,7 +114,6 @@ app.put('/owner/delete/dependent', async (req, res, next) => {
 app.put('/owner/update/dependent', (req, res, next) => {
     let { position, email, id_business } = req.body
 
-
     if (email, position, id_business) {
         Dependent
             .updatePosition(position, email, id_business)
